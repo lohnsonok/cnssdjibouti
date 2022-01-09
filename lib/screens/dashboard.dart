@@ -1,13 +1,17 @@
+import 'dart:ui';
+
 import 'package:cnss_djibouti_app/screens/AppelCotisationScreen.dart';
 import 'package:cnss_djibouti_app/screens/ListeAssuresScreen.dart';
 import 'package:cnss_djibouti_app/screens/RecouvrementScreen.dart';
 import 'package:cnss_djibouti_app/screens/SuiviPaiementScreen.dart';
 import 'package:cnss_djibouti_app/widget/appdrawer.dart';
 import 'package:cnss_djibouti_app/widget/assure.dart';
+import 'package:cnss_djibouti_app/widget/categoryCard.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Dashboard extends StatefulWidget {
@@ -15,15 +19,9 @@ class Dashboard extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-enum RequestState {
-  Ongoing,
-  Success,
-  Error,
-  Starting
-}
+enum RequestState { Ongoing, Success, Error, Starting }
 
 class _MyHomePageState extends State<Dashboard> {
-
   String assureurName = "";
   late SharedPreferences preferences;
   _loadUser() async {
@@ -36,13 +34,13 @@ class _MyHomePageState extends State<Dashboard> {
     }
   }
 
-  Widget cardContent(String imageName, String text, { required Widget page }){
+  Widget cardContent(String imageName, String text, {required Widget page}) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       //crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         GestureDetector(
-            onTap: (){
+            onTap: () {
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
@@ -52,23 +50,24 @@ class _MyHomePageState extends State<Dashboard> {
             },
             child: Container(
               margin: EdgeInsets.all(10.0),
-              child: Image.asset(imageName, width: 64,),
+              child: Image.asset(
+                imageName,
+                width: 64,
+              ),
               height: 70,
               width: 70,
-            )
-        ),
-        Text(text.toUpperCase(),
+            )),
+        Text(
+          text.toUpperCase(),
           style: TextStyle(
-            //color: kPrimaryColor,
-              fontSize: 12
-          ),
+              //color: kPrimaryColor,
+              fontSize: 12),
         )
       ],
     );
   }
 
-  boxDecoration()
-  {
+  boxDecoration() {
     return BoxDecoration(
       color: Colors.white,
       borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -84,117 +83,119 @@ class _MyHomePageState extends State<Dashboard> {
 
   @override
   Widget build(BuildContext context) {
+    var size = MediaQuery.of(context)
+        .size; //this gonna give us total height and with of our device
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('CNSS-Djibouti'),
-        centerTitle: true,
-      ),
-      body: Center(
-          child: Column(
-            children: [
-              Padding(padding: EdgeInsets.all(20),
-                child: Text(assureurName,textAlign: TextAlign.center ,style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),),
-
-              Expanded(
-                child: CustomScrollView(
-                  primary: false,
-                  slivers: <Widget>[
-                    SliverPadding(
-                      padding: const EdgeInsets.all(20),
-                      sliver: SliverGrid.count(
-                        crossAxisSpacing: 10,
-                        mainAxisSpacing: 10,
-                        crossAxisCount: 2,
-                        children: <Widget>[
-                          Container(
-                            padding: const EdgeInsets.all(8),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              //crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                GestureDetector(
-                                    onTap: (){
-                                      Navigator.pushReplacement(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => ListeAssuresPage(),
-                                        ),
-                                      );
-                                    },
-                                    child: Container(
-                                      margin: EdgeInsets.all(10.0),
-                                      child: Image.asset("assets/image/employees.png", width: 64,),
-                                      height: 70,
-                                      width: 70,
-                                    )
-                                ),
-                                Text("Liste des employés",
-                                  style: TextStyle(
-                                    //color: kPrimaryColor,
-                                      fontSize: 12
-                                  ),
-                                )
-                              ],
-                            ),
-                            //color: Colors.red[200],
-                            decoration: boxDecoration(),
-                          ),
-                          Container(
-                              padding: const EdgeInsets.all(8),
-                              decoration: boxDecoration(),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                //crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  GestureDetector(
-                                      onTap: (){
-                                        Navigator.pushReplacement(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => AppelCotisationPage(),
-                                          ),
-                                        );
-                                      },
-                                      child: Container(
-                                        margin: EdgeInsets.all(10.0),
-                                        child: Image.asset("assets/image/dues.png", width: 64,),
-                                        height: 70,
-                                        width: 70,
-                                      )
-                                  ),
-                                  Text("Appel de cotisation",
-                                    style: TextStyle(
-                                      //color: kPrimaryColor,
-                                        fontSize: 12
-                                    ),
-                                  )
-                                ],
-                              )
-                          ),
-
-                          Container(
-                            padding: const EdgeInsets.all(8),
-                            child: Center(child: cardContent("assets/image/payment.png", "Recouvrement", page: RecouvrementPage()),),
-                            decoration: boxDecoration(),
-                          ),
-                          Container(
-                            padding: const EdgeInsets.all(8),
-                            child: Center(child: cardContent("assets/image/folder.png", "Suivi Payement", page: SuiviPaiementPage()),),
-                            decoration: boxDecoration(),
-                          ),
-                        ],
+      backgroundColor: const Color(0xFFFAFAFA),
+      body: Stack(
+        children: <Widget>[
+          Container(
+            // Here the height of the container is 45% of our total height
+            height: size.height * .45,
+            decoration: BoxDecoration(
+              color: Color(0xFF908AFB),
+              image: DecorationImage(
+                alignment: Alignment.bottomLeft,
+                image: AssetImage("assets/images/shape.png"),
+              ),
+            ),
+          ),
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+/*                   Align(
+                    alignment: Alignment.topRight,
+                    child: Container(
+                      alignment: Alignment.center,
+                      height: 52,
+                      width: 52,
+                      decoration: BoxDecoration(
+                        color: Color(0xFFF2BEA1),
+                        shape: BoxShape.circle,
                       ),
+                      child: SvgPicture.asset("assets/icons/menu.svg"),
                     ),
-                  ],
-                ),
-              )
-            ],
+                  ), */
+                  SizedBox(
+                    height: 50,
+                  ),
+                  Text("Bonjour \nAmed Ali",
+                      style: TextStyle(
+                          fontFamily: "Lato",
+                          fontSize: 50,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w700)),
+                  SizedBox(
+                    height: 50,
+                  ),
+                  Expanded(
+                    child: GridView.count(
+                      crossAxisCount: 2,
+                      childAspectRatio: .85,
+                      crossAxisSpacing: 20,
+                      mainAxisSpacing: 20,
+                      children: <Widget>[
+                        CategoryCard(
+                          title: "Liste des Employés",
+                          src: "assets/icons/employees.png",
+                          press: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) {
+                                return ListeAssuresPage();
+                              }),
+                            );
+                          },
+                        ),
+                        CategoryCard(
+                          title: "Appel de cotisation",
+                          src: "assets/icons/savings.png",
+                          press: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) {
+                                return AppelCotisationPage();
+                              }),
+                            );
+                          },
+                        ),
+                        CategoryCard(
+                          title: "Suivi Paiements",
+                          src: "assets/icons/receipt.png",
+                          press: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) {
+                                return SuiviPaiementPage();
+                              }),
+                            );
+                          },
+                        ),
+                        CategoryCard(
+                          title: "Recouvrement",
+                          src: "assets/icons/collecting.png",
+                          press: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) {
+                                return RecouvrementPage();
+                              }),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
           )
-
+        ],
       ),
-      drawer: AppDrawer(),
     );
   }
 }
-

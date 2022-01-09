@@ -110,7 +110,7 @@ class _loginscreenState extends State<loginscreen> {
                       children: [
                         builldtextfield(
                             CommunityMaterialIcons.account_outline,
-                            "Numero Cotisants",
+                            "Numéro Cotisant",
                             false,
                             false,
                             compteCotisantController),
@@ -126,7 +126,7 @@ class _loginscreenState extends State<loginscreen> {
                     textAlign: TextAlign.center,
                     text: TextSpan(
                       text:
-                          "Pour Avoir votre Mote de Passe Veuillez vous rapprochez au Service Recouvrements(CNSS)",
+                          "Pour obtenir votre mot de passe, veuillez vous rapprochez du Service Recouvrements(CNSS)",
                       style: TextStyle(
                         fontSize: 13,
                         color: Colors.blue,
