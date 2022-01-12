@@ -263,7 +263,9 @@ class SuiviPaiementPageState extends State<SuiviPaiementPage> {
                                     color: Colors.grey[500],
                                     fontFamily: "Lato"),
                               ),
-                              SizedBox(),
+                              SizedBox(
+                                height: 5,
+                              ),
                               Text(
                                 recouvrement.compte_cotisant,
                                 style: TextStyle(
@@ -307,6 +309,9 @@ class SuiviPaiementPageState extends State<SuiviPaiementPage> {
                                   recouvrement.solde,
                                   style: TextStyle(
                                       color: Colors.black, fontFamily: "Lato"),
+                                ),
+                                SizedBox(
+                                  height: 5,
                                 ),
                                 Text(
                                   "Date d'échéance:",

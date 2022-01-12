@@ -1,11 +1,14 @@
 import 'dart:convert';
 
+import 'package:cnss_djibouti_app/animations/fade_animation.dart';
 import 'package:cnss_djibouti_app/models/CotisantAssure.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:intl/intl.dart';
 
 import '../configs/ApiConnexion.dart';
 import '../configs/theme.dart';
@@ -17,6 +20,7 @@ class ListeAssuresPage extends StatefulWidget {
 }
 
 class ListeAssuresPageState extends State<ListeAssuresPage> {
+  List<dynamic> assuresList = [];
   String assureurName = "";
   String compteCotisant = "";
   bool isLoading = true;
@@ -34,6 +38,7 @@ class ListeAssuresPageState extends State<ListeAssuresPage> {
       });
 
       futureListeAssures = fetchListeAssures(compteCotisant);
+      assuresList = await futureListeAssures;
     }
   }
 
@@ -68,163 +73,195 @@ class ListeAssuresPageState extends State<ListeAssuresPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('CNSS-Djibouti'),
-          centerTitle: true,
-          leading: Builder(
-            builder: (context) => BackButton(
-              color: Colors.white,
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          leadingWidth: 20,
+          systemOverlayStyle:
+              SystemUiOverlayStyle(statusBarIconBrightness: Brightness.dark),
+          leading: IconButton(
+              padding: EdgeInsets.only(left: 20),
               onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => Dashboard(),
-                  ),
-                );
+                Navigator.pop(context);
               },
+              icon: Icon(
+                Icons.arrow_back_ios,
+                color: Colors.grey.shade600,
+              )),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: IconButton(
+                  iconSize: 30,
+                  onPressed: () {},
+                  icon: Icon(
+                    Icons.filter_list,
+                    color: Colors.grey.shade400,
+                  )),
+            )
+          ],
+          title: Container(
+            height: 45,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 10.0),
+              child: TextField(
+                cursorColor: Colors.grey,
+                decoration: InputDecoration(
+                  contentPadding:
+                      EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                  filled: true,
+                  fillColor: Colors.grey.shade200,
+                  prefixIcon: Icon(Icons.search, color: Colors.grey),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(50),
+                      borderSide: BorderSide.none),
+                  hintText: "Rechercher",
+                  hintStyle: TextStyle(fontSize: 14, fontFamily: "Lato"),
+                ),
+              ),
             ),
           ),
         ),
-        body: isLoading
-            ? Center(child: CircularProgressIndicator())
-            : Center(
-                child: Column(
+        body: Container(
+          child: isLoading
+              ? Center(child: CircularProgressIndicator())
+              : assuresList.length == 0
+                  ? Center(
+                      child: Text("Aucun donnée trouvée pour ce compte : " +
+                          compteCotisant))
+                  : ListView.builder(
+                      padding: EdgeInsets.all(20),
+                      itemCount: assuresList.length,
+                      itemBuilder: (context, index) {
+                        return FadeAnimation((1.0 + index) / 4,
+                            itemWidget(assure: assuresList[index]));
+                      }),
+        ));
+  }
+
+  itemWidget({required CotisantAssure assure}) {
+    final f = new DateFormat('dd-MM-yyyy');
+
+    return Container(
+      padding: EdgeInsets.all(10),
+      margin: EdgeInsets.only(bottom: 15),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.2),
+              spreadRadius: 0,
+              blurRadius: 2,
+              offset: Offset(0, 1),
+            ),
+          ]),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Row(children: [
+                  Flexible(
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Numéro Assuré : ",
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    fontFamily: "Lato",
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              SizedBox(
+                                width: 5,
+                              ),
+                              Text(assure.compte_assure,
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 15,
+                                      fontFamily: "Lato",
+                                      fontWeight: FontWeight.w700)),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Nom Assuré : ",
+                                style: TextStyle(
+                                    fontSize: 15,
+                                    fontFamily: "Lato",
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              SizedBox(
+                                width: 5,
+                              ),
+                              Flexible(
+                                  child: Text(assure.nomAssure,
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 14,
+                                          fontFamily: "Lato",
+                                          fontWeight: FontWeight.w700))),
+                            ],
+                          ),
+                        ]),
+                  )
+                ]),
+              ),
+            ],
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Padding(
-                    padding: EdgeInsets.all(20),
-                    child: Text(
-                      "Liste des assurés de : " + assureurName,
-                      textAlign: TextAlign.center,
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
+                  Text(
+                    "Salaire brut : ",
+                    style: TextStyle(
+                        fontFamily: "Lato", fontWeight: FontWeight.bold),
                   ),
                   SizedBox(
-                    height: 10,
+                    width: 5,
                   ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 15),
-                    child: TextField(
-                      onChanged: (value) {
-                        setState(() {
-                          valRecherche = value;
-                        });
-                      },
-                      decoration: InputDecoration(
-                        suffixIcon: Icon(Icons.search),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Color(0Xfff0f2e9),
-                          ),
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(35.0),
-                          ),
-                        ),
-                        hintText: "Recherche",
-                      ),
-                    ),
+                  Text(assure.salaire,
+                      style: TextStyle(
+                          color: Colors.grey[500], fontFamily: "Lato")),
+                ],
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Date d'embauche : ",
+                    style: TextStyle(
+                        fontFamily: "Lato", fontWeight: FontWeight.bold),
                   ),
-                  Expanded(
-                    child: FutureBuilder<List<CotisantAssure>>(
-                      future: futureListeAssures,
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          return ListView.builder(
-                            itemCount: snapshot.data!.length,
-                            itemBuilder: (_, index) {
-                              return snapshot.data![index].nomAssure!
-                                      .toLowerCase()
-                                      .contains(valRecherche)
-                                  ? Container(
-                                      child: Container(
-                                        margin: EdgeInsets.symmetric(
-                                            horizontal: 10, vertical: 5),
-                                        padding: EdgeInsets.all(20.0),
-                                        decoration: BoxDecoration(
-                                          color: Color(0xff1fceed),
-                                          borderRadius:
-                                              BorderRadius.circular(15.0),
-                                        ),
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              "Numero Assuré : ${snapshot.data![index].compte_assure}",
-                                              style: TextStyle(
-                                                fontSize: 14.0,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                            SizedBox(height: 8),
-                                            Text(
-                                                "Nom assuré : ${snapshot.data![index].nomAssure}"),
-                                            SizedBox(height: 8),
-                                            Text(
-                                                "SSN : ${snapshot.data![index].SSN}"),
-                                            SizedBox(height: 8),
-                                            Text(
-                                                "Salaire Brut : ${snapshot.data![index].salaire}"),
-                                            SizedBox(height: 8),
-                                            Text(
-                                                "Date d'embauche : ${snapshot.data![index].date_d_embauche}"),
-                                            // SizedBox(height: 8),
-                                            // Text(
-                                            //     "Matricule externe : ${snapshot.data![index].matricule_externe}"),
-                                          ],
-                                        ),
-                                      ),
-                                    )
-                                  : Container();
-                            },
-                          );
-                        } else {
-                          //return Center(child: CircularProgressIndicator());
-                          return Center(
-                              child: Text(
-                                  "Aucun donnée trouvée pour ce compte : " +
-                                      compteCotisant));
-                        }
-                      },
-                      /*Center(
-          child: Column(
-            children: [
-            Container(
-              margin: EdgeInsets.all(20),
-              child: DataTable(
-                columns: [
-                  DataColumn(label: Text('ID', style: TextStyle(fontSize: 18))),
-                  DataColumn(label: Text('ID', style: TextStyle(fontSize: 18))),
-                  DataColumn(label: Text('ID', style: TextStyle(fontSize: 18))),
+                  SizedBox(
+                    width: 5,
+                  ),
+                  Text(
+                      f.format(DateTime.parse(
+                          assure.date_d_embauche.toString().substring(0, 10))),
+                      style: TextStyle(
+                          color: Colors.grey[500], fontFamily: "Lato")),
                 ],
-                rows: [
-                  DataRow(cells: [
-                    DataCell(Text('1')),
-                    DataCell(Text('1')),
-                    DataCell(Text('1')),
-                  ]),
-
-                  DataRow(cells: [
-                    DataCell(Text('1')),
-                    DataCell(Text('1')),
-                    DataCell(Text('1')),
-                  ]),
-
-                  DataRow(cells: [
-                    DataCell(Text('1')),
-                    DataCell(Text('1')),
-                    DataCell(Text('1')),
-                  ]),
-                ],
-              )
-            )
-          ],
+              ),
+            ],
           ),
-        ),*/
-                    ),
-                  )
-                ],
-              )));
+        ],
+      ),
+    );
   }
 }

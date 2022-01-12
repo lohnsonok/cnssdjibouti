@@ -18,16 +18,16 @@ class CotisantAssure {
       required this.date_de_rupture});
 
   int id;
-  String? matricule_externe;
-  String? compte_cotisant;
-  String? nom;
-  String? compte_assure;
-  String? nomAssure;
-  String? regime;
-  String? salaire;
-  String? SSN;
-  String? date_d_embauche;
-  String? date_de_rupture;
+  String matricule_externe;
+  String compte_cotisant;
+  String nom;
+  String compte_assure;
+  String nomAssure;
+  String regime;
+  String salaire;
+  String SSN;
+  String date_d_embauche;
+  String date_de_rupture;
 
   factory CotisantAssure.fromMap(Map<String, dynamic> json) => CotisantAssure(
         id: json["id"],
