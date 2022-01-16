@@ -177,7 +177,7 @@ class SuiviPaiementPageState extends State<SuiviPaiementPage> {
                           child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(recouvrement.nom,
+                                Text(recouvrement.nom ?? "",
                                     style: TextStyle(
                                         color: Colors.black,
                                         fontSize: 15,
@@ -186,7 +186,7 @@ class SuiviPaiementPageState extends State<SuiviPaiementPage> {
                                 SizedBox(
                                   height: 5,
                                 ),
-                                Text(recouvrement.periode,
+                                Text(recouvrement.periode ?? "",
                                     style: TextStyle(
                                         color: Colors.grey[500],
                                         fontFamily: "Lato")),
@@ -250,7 +250,7 @@ class SuiviPaiementPageState extends State<SuiviPaiementPage> {
                                 height: 5,
                               ),
                               Text(
-                                recouvrement.cotisation,
+                                recouvrement.cotisation ?? "",
                                 style: TextStyle(
                                     color: Colors.black, fontFamily: "Lato"),
                               ),
@@ -267,7 +267,7 @@ class SuiviPaiementPageState extends State<SuiviPaiementPage> {
                                 height: 5,
                               ),
                               Text(
-                                recouvrement.compte_cotisant,
+                                recouvrement.compte_cotisant ?? "",
                                 style: TextStyle(
                                     color: Colors.black, fontFamily: "Lato"),
                               ),
@@ -284,7 +284,7 @@ class SuiviPaiementPageState extends State<SuiviPaiementPage> {
                                 height: 5,
                               ),
                               Text(
-                                recouvrement.numero_appel_de_cotisation,
+                                recouvrement.numero_appel_de_cotisation ?? "",
                                 style: TextStyle(
                                     color: Colors.black, fontFamily: "Lato"),
                               ),
@@ -306,7 +306,7 @@ class SuiviPaiementPageState extends State<SuiviPaiementPage> {
                                   height: 5,
                                 ),
                                 Text(
-                                  recouvrement.solde,
+                                  recouvrement.solde ?? "",
                                   style: TextStyle(
                                       color: Colors.black, fontFamily: "Lato"),
                                 ),

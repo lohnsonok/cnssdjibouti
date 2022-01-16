@@ -12,12 +12,12 @@ class Recouvrement {
       required this.statut,
       required this.date_et_heure_de_modification});
 
-  String id_dossier;
-  String description;
-  String compte_cotisant;
-  String nom;
-  String statut;
-  String date_et_heure_de_modification;
+  String? id_dossier;
+  String? description;
+  String? compte_cotisant;
+  String? nom;
+  String? statut;
+  String? date_et_heure_de_modification;
 
   factory Recouvrement.fromMap(Map<String, dynamic> json) => Recouvrement(
         id_dossier: json["id_dossier"],

@@ -1,9 +1,8 @@
 import 'dart:async';
 //import 'package:cnss_djibouti_app/screens/homePage.dart';
+import 'package:cnss_djibouti_app/screens/login.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-
-import 'home.dart';
 
 class splash extends StatefulWidget {
   @override
@@ -18,17 +17,18 @@ class _splashState extends State<splash> {
       Duration(seconds: 4),
       () => Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => homenew()),
+        MaterialPageRoute(builder: (context) => login()),
       ),
     );
   }
 
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Container(
         decoration: BoxDecoration(
             image: DecorationImage(
-          image: AssetImage('assets/image/splah.jpg'),
+          image: AssetImage('assets/images/logo.jpg'),
         )),
       ),
     );

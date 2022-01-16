@@ -29,7 +29,7 @@ class AppDrawer extends StatelessWidget {
               color: Colors.white10,
             ),
             child: Image.asset(
-              'assets/image/logo.jpg',
+              'assets/images/logo.jpg',
               fit: BoxFit.fitHeight,
             ),
           ),
@@ -90,7 +90,7 @@ class AppDrawer extends StatelessWidget {
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => loginscreen(),
+                  builder: (context) => login(),
                 ),
               );
             },

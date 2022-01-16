@@ -23,6 +23,7 @@ enum RequestState { Ongoing, Success, Error, Starting }
 
 class _MyHomePageState extends State<Dashboard> {
   String assureurName = "";
+  String compteCotisant = "";
   late SharedPreferences preferences;
   _loadUser() async {
     preferences = await SharedPreferences.getInstance();
@@ -32,6 +33,15 @@ class _MyHomePageState extends State<Dashboard> {
         assureurName = preferences.getString('nom')!;
       });
     }
+    setState(() {
+      compteCotisant = preferences.getString('compte_cotisant')!;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUser();
   }
 
   Widget cardContent(String imageName, String text, {required Widget page}) {
@@ -123,12 +133,7 @@ class _MyHomePageState extends State<Dashboard> {
                   SizedBox(
                     height: 50,
                   ),
-                  Text("Bonjour \nAmed Ali",
-                      style: TextStyle(
-                          fontFamily: "Lato",
-                          fontSize: 50,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w700)),
+                  _getWelcome(),
                   SizedBox(
                     height: 50,
                   ),
@@ -197,5 +202,23 @@ class _MyHomePageState extends State<Dashboard> {
         ],
       ),
     );
+  }
+
+  _getWelcome() {
+    if (compteCotisant == "") {
+      return Text(assureurName,
+          style: TextStyle(
+              fontFamily: "Lato",
+              fontSize: 50,
+              color: Colors.white,
+              fontWeight: FontWeight.w700));
+    } else {
+      return Text("Compte \n" + compteCotisant,
+          style: TextStyle(
+              fontFamily: "Lato",
+              fontSize: 45,
+              color: Colors.white,
+              fontWeight: FontWeight.w700));
+    }
   }
 }

@@ -12,7 +12,7 @@ class aproposcren extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             CircleAvatar(
-              backgroundImage: AssetImage('assets/image/logo.jpg'),
+              backgroundImage: AssetImage('assets/images/logo.jpg'),
               maxRadius: 120,
               minRadius: 120,
             ),

@@ -16,15 +16,15 @@ class SuiviPaiement {
     required this.solde,
   });
 
-  String periode;
-  String compte_cotisant;
-  String numero_appel_de_cotisation;
-  String nom;
-  String statut;
-  String date_d_echeance;
-  String cotisation;
-  String total;
-  String solde;
+  String? periode;
+  String? compte_cotisant;
+  String? numero_appel_de_cotisation;
+  String? nom;
+  String? statut;
+  String? date_d_echeance;
+  String? cotisation;
+  String? total;
+  String? solde;
 
   factory SuiviPaiement.fromMap(Map<String, dynamic> json) => SuiviPaiement(
         periode: json["période"],

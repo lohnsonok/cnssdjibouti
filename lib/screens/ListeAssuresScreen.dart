@@ -179,7 +179,7 @@ class ListeAssuresPageState extends State<ListeAssuresPage> {
                               SizedBox(
                                 width: 5,
                               ),
-                              Text(assure.compte_assure,
+                              Text(assure.compte_assure ?? "",
                                   style: TextStyle(
                                       color: Colors.black,
                                       fontSize: 15,
@@ -204,7 +204,7 @@ class ListeAssuresPageState extends State<ListeAssuresPage> {
                                 width: 5,
                               ),
                               Flexible(
-                                  child: Text(assure.nomAssure,
+                                  child: Text(assure.nomAssure ?? "",
                                       style: TextStyle(
                                           color: Colors.black,
                                           fontSize: 14,
@@ -235,7 +235,7 @@ class ListeAssuresPageState extends State<ListeAssuresPage> {
                   SizedBox(
                     width: 5,
                   ),
-                  Text(assure.salaire,
+                  Text(assure.salaire ?? "",
                       style: TextStyle(
                           color: Colors.grey[500], fontFamily: "Lato")),
                 ],

@@ -17,17 +17,17 @@ class AppelCotisation {
       required this.statut_de_revision,
       required this.statut});
 
-  String numero_appel_de_cotisation;
-  String compte_cotisant;
-  String statut_de_paiement;
-  String nom;
-  String periode;
-  String regime;
-  String multi_periode;
-  String date_d_echeance;
-  String date_de_declaration;
-  String statut_de_revision;
-  String statut;
+  String? numero_appel_de_cotisation;
+  String? compte_cotisant;
+  String? statut_de_paiement;
+  String? nom;
+  String? periode;
+  String? regime;
+  String? multi_periode;
+  String? date_d_echeance;
+  String? date_de_declaration;
+  String? statut_de_revision;
+  String? statut;
 
   factory AppelCotisation.fromMap(Map<String, dynamic> json) => AppelCotisation(
         numero_appel_de_cotisation: json["numéro_appel_de_cotisation"],

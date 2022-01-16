@@ -27,7 +27,7 @@ class assurecartState extends State<assurecart> {
               height: 300,
               decoration: BoxDecoration(
                 image: DecorationImage(
-                    image: AssetImage('assets/image/cart.jpg'),
+                    image: AssetImage('assets/images/cart.jpg'),
                     fit: BoxFit.fill),
               ),
               child: Container(

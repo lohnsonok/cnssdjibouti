@@ -1,228 +1,267 @@
+import 'dart:ui';
+
+import 'package:animations/animations.dart';
 import 'package:cnss_djibouti_app/configs/ApiConnexion.dart';
 import 'package:cnss_djibouti_app/screens/dashboard.dart';
+import 'package:cnss_djibouti_app/screens/retraite.dart';
+import 'package:cnss_djibouti_app/widget/delayed_animation.dart';
 import 'package:community_material_icon/community_material_icon.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 // ignore: camel_case_types
-class loginscreen extends StatefulWidget {
-  const loginscreen({Key? key}) : super(key: key);
+class login extends StatefulWidget {
+  const login({Key? key}) : super(key: key);
 
   @override
-  _loginscreenState createState() => _loginscreenState();
+  _loginState createState() => _loginState();
 }
 
-// ignore: camel_case_types
-class _loginscreenState extends State<loginscreen> {
+const double _fabDimension = 56.0;
+
+class _loginState extends State<login> {
   bool isMale = true;
   // bool isSignup = true;
   bool isRemebre = false;
   bool loading = false;
   late SharedPreferences preferences;
 
-  TextEditingController compteCotisantController = new TextEditingController();
-  TextEditingController passwordController = new TextEditingController();
+  TextEditingController compteCotisantController = new TextEditingController()
+    ..text = '0600000000001';
+  TextEditingController passwordController = new TextEditingController()
+    ..text = 'cnss2020';
+
+  ContainerTransitionType _transitionType = ContainerTransitionType.fade;
+
+  void _showMarkedAsDoneSnackbar(bool? isMarkedAsDone) {
+    if (isMarkedAsDone ?? false)
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Marked as done!'),
+      ));
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          Positioned(
-            top: 0,
-            right: 0,
-            left: 0,
-            child: Container(
-              height: 300,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                    image: AssetImage('assets/image/login.jpg'),
-                    fit: BoxFit.fill),
-              ),
-              child: Container(
-                padding: EdgeInsets.only(top: 90, left: 20),
-                color: Color(0xFF3b5999).withOpacity(.85),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    RichText(
-                      text: TextSpan(
-                        text: "Bienvenue CNSS",
-                        style: TextStyle(
-                          fontSize: 25,
-                          color: Colors.yellow[700],
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 5),
-                    Text(
-                      "Page Connexion",
-                      style: TextStyle(
-                        letterSpacing: 1,
-                        color: Colors.white,
-                      ),
-                    )
-                  ],
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leadingWidth: 20,
+        systemOverlayStyle:
+            SystemUiOverlayStyle(statusBarIconBrightness: Brightness.dark),
+      ),
+      backgroundColor: Colors.white,
+      body: SingleChildScrollView(
+        child: SizedBox(
+          width: double.infinity,
+          child: Stack(
+            children: [
+              Positioned(
+                bottom: 10,
+                right: -10,
+                child: Container(
+                  width: 300,
+                  height: 300,
+                  child: Image.asset(
+                    'assets/images/energy.png',
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
-            ),
-          ),
-          Positioned(
-            top: 200,
-            child: Container(
-              height: 380,
-              padding: EdgeInsets.all(20),
-              width: MediaQuery.of(context).size.width - 45,
-              margin: EdgeInsets.symmetric(horizontal: 20),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(15),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.3),
-                    blurRadius: 15,
-                    spreadRadius: 5,
+              Positioned(
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(
+                    sigmaX: 80,
+                    sigmaY: 80,
                   ),
-                ],
+                  child: Container(),
+                ),
               ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    "Connexion".toUpperCase(),
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.green),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Container(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        builldtextfield(
-                            CommunityMaterialIcons.account_outline,
-                            "Numéro Cotisant",
-                            false,
-                            false,
-                            compteCotisantController),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        builldtextfield(CommunityMaterialIcons.onepassword,
-                            "Mot de passe", true, false, passwordController),
-                      ],
-                    ),
-                  ),
-                  RichText(
-                    textAlign: TextAlign.center,
-                    text: TextSpan(
-                      text:
-                          "Pour obtenir votre mot de passe, veuillez vous rapprochez du Service Recouvrements(CNSS)",
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: Colors.blue,
+              SizedBox(
+                width: double.infinity,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 40),
+                  child: Column(
+                    children: [
+                      const SizedBox(
+                        height: 50,
                       ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Positioned(
-            top: 535,
-            right: 0,
-            left: 0,
-            child: InkWell(
-              onTap: () {},
-              child: Center(
-                child: Container(
-                  height: 90,
-                  width: 90,
-                  padding: EdgeInsets.all(15),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(50),
-                    boxShadow: [
-                      BoxShadow(
-                          color: Colors.black.withOpacity(.3),
-                          spreadRadius: 1,
-                          blurRadius: 2,
-                          offset: Offset(0, 1))
+                      _logo(),
+                      const SizedBox(
+                        height: 70,
+                      ),
+                      _loginLabel(),
+                      const SizedBox(
+                        height: 70,
+                      ),
+                      builldtextfield("Numéro", "numero cotisant ou assure ",
+                          false, compteCotisantController),
+                      const SizedBox(
+                        height: 50,
+                      ),
+                      builldtextfield("Mot de passe", "votre mot de passe",
+                          true, passwordController),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        "Pour obtenir votre mot de passe, veuillez vous rapprochez du Service Recouvrements(CNSS)",
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.blue,
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 70,
+                      ),
+                      _loginBtn(),
+                      const SizedBox(
+                        height: 70,
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      OpenContainer<bool>(
+                          transitionType: _transitionType,
+                          openBuilder:
+                              (BuildContext _, VoidCallback openContainer) {
+                            return const RetraiteScreen(
+                                includeMarkAsDoneButton: true);
+                          },
+                          onClosed: _showMarkedAsDoneSnackbar,
+                          tappable: false,
+                          closedColor: Colors.transparent,
+                          closedShape: const RoundedRectangleBorder(),
+                          closedElevation: 0.0,
+                          closedBuilder:
+                              (BuildContext _, VoidCallback openContainer) {
+                            return _signUpLabel(
+                                "Simuler ma Pension de Retraite",
+                                const Color(0xff164276),
+                                openContainer);
+                          }),
+                      const SizedBox(
+                        height: 45,
+                      ),
                     ],
                   ),
-                  child: loading
-                      ? CircularProgressIndicator(
-                          strokeWidth: 4.0,
-                          valueColor:
-                              new AlwaysStoppedAnimation(Color(0xFF6aa6f8)),
-                        )
-                      : Container(
-                          decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [Colors.green, Colors.greenAccent],
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                              ),
-                              borderRadius: BorderRadius.circular(30),
-                              boxShadow: [
-                                BoxShadow(
-                                    color: Colors.black.withOpacity(.3),
-                                    spreadRadius: 1,
-                                    blurRadius: 2,
-                                    offset: Offset(0, 1))
-                              ]),
-                          child: InkWell(
-                            onTap: () {
-                              setState(() {
-                                loading = true;
-                              });
-                              _login();
-                            },
-                            child: Icon(
-                              Icons.arrow_forward,
-                              color: Colors.white,
-                            ),
-                          )),
                 ),
               ),
-            ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
 
-  Widget builldtextfield(IconData icon, String hinText, bool isPassword,
-      bool isEmail, TextEditingController controller) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8.0),
-      child: TextField(
-        controller: controller,
-        obscureText: isPassword,
-        keyboardType: isEmail ? TextInputType.emailAddress : TextInputType.text,
-        decoration: InputDecoration(
-          prefixIcon: Icon(
-            icon,
-            color: Colors.blue,
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(
-              color: Color(0Xfff0f2e9),
+  Widget _signUpLabel(
+      String label, Color textColor, VoidCallback openContainer) {
+    return GestureDetector(
+        onTap: openContainer,
+        child: Text(
+          label,
+          style: TextStyle(
+              color: textColor,
+              fontWeight: FontWeight.w800,
+              fontSize: 18,
+              fontFamily: "Lato"),
+        ));
+  }
+
+  Widget _loginBtn() {
+    return Container(
+      width: double.infinity,
+      height: 60,
+      decoration: const BoxDecoration(
+        color: Color(0xff00a7e5),
+        borderRadius: BorderRadius.all(Radius.circular(10)),
+      ),
+      child: TextButton(
+          onPressed: () => {
+                setState(() {
+                  loading = true;
+                }),
+                _login(),
+              },
+          child: loading
+              ? CircularProgressIndicator(
+                  strokeWidth: 2.0,
+                  valueColor: new AlwaysStoppedAnimation(Color(0xFFFFFFFF)),
+                )
+              : Text(
+                  "Connexion",
+                  style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w800,
+                      fontSize: 24,
+                      fontFamily: "Lato"),
+                )),
+    );
+  }
+
+  Widget builldtextfield(String label, String hintText, bool isPassword,
+      TextEditingController controller) {
+    return DelayedAnimation(
+        delay: 50,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              label,
+              style: const TextStyle(
+                  color: Color(0xff8fa1b6),
+                  fontWeight: FontWeight.w600,
+                  fontSize: 20,
+                  fontFamily: "Lato"),
             ),
-            borderRadius: BorderRadius.all(
-              Radius.circular(35.0),
+            TextField(
+              controller: controller,
+              obscureText: isPassword,
+              decoration: InputDecoration(
+                hintText: hintText,
+                hintStyle: const TextStyle(
+                    color: Color(0xffc5d2e1),
+                    fontWeight: FontWeight.w400,
+                    fontSize: 20,
+                    fontFamily: "Lato"),
+                enabledBorder: const UnderlineInputBorder(
+                  borderSide: BorderSide(color: Color(0xffdfe8f3)),
+                ),
+              ),
             ),
+          ],
+        ));
+  }
+
+  Widget _loginLabel() {
+    return DelayedAnimation(
+        delay: 50,
+        child: Center(
+          child: Text(
+            "Bienvenue à CNSS",
+            style: const TextStyle(
+                color: Color(0xff333c8b),
+                fontWeight: FontWeight.w900,
+                fontSize: 34,
+                fontFamily: "Lato"),
           ),
-          hintText: hinText,
+        ));
+  }
+
+  Widget _logo() {
+    return DelayedAnimation(
+      delay: 10,
+      child: Center(
+        child: SizedBox(
+          child: Image.asset(
+            "assets/images/logo.jpg",
+          ),
+          height: 100,
         ),
       ),
     );
@@ -273,12 +312,38 @@ class _loginscreenState extends State<loginscreen> {
         await preferences.setString("date_de_creation_de_l_entreprise", response.data["date_de_creation_de_l_entreprise"]);
         await preferences.setString("telephone", response.data["telephone"]);*/
 
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (context) => Dashboard(),
         ),
       );
     }
+  }
+}
+
+class _InkWellOverlay extends StatelessWidget {
+  const _InkWellOverlay({
+    this.openContainer,
+    this.width,
+    this.height,
+    this.child,
+  });
+
+  final VoidCallback? openContainer;
+  final double? width;
+  final double? height;
+  final Widget? child;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: height,
+      width: width,
+      child: InkWell(
+        onTap: openContainer,
+        child: child,
+      ),
+    );
   }
 }

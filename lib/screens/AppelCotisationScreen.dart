@@ -163,7 +163,7 @@ class AppelCotisationPageState extends State<AppelCotisationPage> {
                           child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(appelCotisation.nom,
+                                Text(appelCotisation.nom ?? "",
                                     style: TextStyle(
                                         color: Colors.black,
                                         fontSize: 15,
@@ -237,7 +237,7 @@ class AppelCotisationPageState extends State<AppelCotisationPage> {
                                 height: 5,
                               ),
                               Text(
-                                appelCotisation.regime,
+                                appelCotisation.regime ?? "",
                                 style: TextStyle(
                                     color: Colors.black, fontFamily: "Lato"),
                               ),
@@ -254,7 +254,7 @@ class AppelCotisationPageState extends State<AppelCotisationPage> {
                                 height: 5,
                               ),
                               Text(
-                                appelCotisation.compte_cotisant,
+                                appelCotisation.compte_cotisant ?? "",
                                 style: TextStyle(
                                     color: Colors.black, fontFamily: "Lato"),
                               ),
@@ -271,7 +271,8 @@ class AppelCotisationPageState extends State<AppelCotisationPage> {
                                 height: 5,
                               ),
                               Text(
-                                appelCotisation.numero_appel_de_cotisation,
+                                appelCotisation.numero_appel_de_cotisation ??
+                                    "",
                                 style: TextStyle(
                                     color: Colors.black, fontFamily: "Lato"),
                               ),
@@ -293,7 +294,7 @@ class AppelCotisationPageState extends State<AppelCotisationPage> {
                                   height: 5,
                                 ),
                                 Text(
-                                  appelCotisation.multi_periode,
+                                  appelCotisation.multi_periode ?? "",
                                   style: TextStyle(
                                       color: Colors.black, fontFamily: "Lato"),
                                 ),

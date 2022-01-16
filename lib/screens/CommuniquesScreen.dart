@@ -87,7 +87,7 @@ class CommuniquesPageState extends State<CommuniquesPage> {
                                                   AppTheme.randomColor(context),
                                             ),
                                             child: Image.asset(
-                                              "assets/image/logo.jpg",
+                                              "assets/images/logo.jpg",
                                               fit: BoxFit.fill,
                                               width: 40,
                                             )),

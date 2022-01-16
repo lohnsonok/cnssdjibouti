@@ -1,5 +1,4 @@
 import 'package:cnss_djibouti_app/screens/dashboard.dart';
-import 'package:cnss_djibouti_app/screens/home.dart';
 import 'package:cnss_djibouti_app/widget/resultacarte.dart';
 import 'package:flutter/material.dart';
 
@@ -43,7 +42,7 @@ class AssurescreenState extends State<assurescreen> {
               height: 300,
               decoration: BoxDecoration(
                 image: DecorationImage(
-                    image: AssetImage('assets/image/cart.jpg'),
+                    image: AssetImage('assets/images/cart.jpg'),
                     fit: BoxFit.fill),
               ),
               child: Container(
