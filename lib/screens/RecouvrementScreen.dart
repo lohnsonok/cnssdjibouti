@@ -20,6 +20,7 @@ class RecouvrementPage extends StatefulWidget {
 
 class RecouvrementPageState extends State<RecouvrementPage> {
   List<dynamic> recouvrementList = [];
+  List<dynamic> recouvrements = [];
   String assureurName = "";
   String compteCotisant = "";
   bool isLoading = true;
@@ -35,6 +36,7 @@ class RecouvrementPageState extends State<RecouvrementPage> {
 
       futureListeRecouvrement = fetchListeRecouvrement(compteCotisant);
       recouvrementList = await futureListeRecouvrement;
+      recouvrements = recouvrementList;
     }
   }
 
@@ -112,6 +114,9 @@ class RecouvrementPageState extends State<RecouvrementPage> {
                   hintText: "Rechercher",
                   hintStyle: TextStyle(fontSize: 14, fontFamily: "Lato"),
                 ),
+                onChanged: (val) {
+                  _search(val);
+                },
               ),
             ),
           ),
@@ -212,5 +217,23 @@ class RecouvrementPageState extends State<RecouvrementPage> {
         ],
       ),
     );
+  }
+
+  _search(String value) {
+    setState(() {
+      if (value.isEmpty) {
+        recouvrementList = recouvrements;
+      } else {
+        recouvrementList = recouvrements
+            .where((u) =>
+                (u.id_dossier ?? "")
+                    .toLowerCase()
+                    .contains(value.toLowerCase()) ||
+                (u.description ?? "")
+                    .toLowerCase()
+                    .contains(value.toLowerCase()))
+            .toList();
+      }
+    });
   }
 }

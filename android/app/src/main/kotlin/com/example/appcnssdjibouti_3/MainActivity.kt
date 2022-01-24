@@ -1,4 +1,4 @@
-package com.example.appcnssdjibouti_3
+package com.appcnssdjibouti_3.appcnssdjibouti
 
 import io.flutter.embedding.android.FlutterActivity
 

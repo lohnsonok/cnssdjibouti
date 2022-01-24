@@ -55,7 +55,7 @@ class AppelCotisationPageState extends State<AppelCotisationPage> {
           .map<AppelCotisation>((json) => AppelCotisation.fromMap(json))
           .toList();
     } else {
-      throw Exception('Failed to load album');
+      throw Exception('Failed to load data');
     }
   }
 
@@ -99,21 +99,18 @@ class AppelCotisationPageState extends State<AppelCotisationPage> {
         title: Container(
           height: 45,
           child: Padding(
-            padding: const EdgeInsets.only(left: 10.0),
-            child: TextField(
-              cursorColor: Colors.grey,
-              decoration: InputDecoration(
-                contentPadding:
-                    EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-                filled: true,
-                fillColor: Colors.grey.shade200,
-                prefixIcon: Icon(Icons.search, color: Colors.grey),
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(50),
-                    borderSide: BorderSide.none),
-                hintText: "Rechercher",
-                hintStyle: TextStyle(fontSize: 14, fontFamily: "Lato"),
-              ),
+            padding: const EdgeInsets.only(left: 20.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Text(
+                  "Appels de cotisation",
+                  style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black),
+                ),
+              ],
             ),
           ),
         ),

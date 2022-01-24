@@ -37,13 +37,6 @@ class _loginState extends State<login> {
 
   ContainerTransitionType _transitionType = ContainerTransitionType.fade;
 
-  void _showMarkedAsDoneSnackbar(bool? isMarkedAsDone) {
-    if (isMarkedAsDone ?? false)
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('Marked as done!'),
-      ));
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -130,10 +123,8 @@ class _loginState extends State<login> {
                           transitionType: _transitionType,
                           openBuilder:
                               (BuildContext _, VoidCallback openContainer) {
-                            return const RetraiteScreen(
-                                includeMarkAsDoneButton: true);
+                            return const RetraiteScreen();
                           },
-                          onClosed: _showMarkedAsDoneSnackbar,
                           tappable: false,
                           closedColor: Colors.transparent,
                           closedShape: const RoundedRectangleBorder(),
@@ -319,31 +310,5 @@ class _loginState extends State<login> {
         ),
       );
     }
-  }
-}
-
-class _InkWellOverlay extends StatelessWidget {
-  const _InkWellOverlay({
-    this.openContainer,
-    this.width,
-    this.height,
-    this.child,
-  });
-
-  final VoidCallback? openContainer;
-  final double? width;
-  final double? height;
-  final Widget? child;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: height,
-      width: width,
-      child: InkWell(
-        onTap: openContainer,
-        child: child,
-      ),
-    );
   }
 }

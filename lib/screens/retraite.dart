@@ -1,14 +1,14 @@
+import 'dart:convert';
 import 'package:cnss_djibouti_app/widget/alertDialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:survey_kit/survey_kit.dart';
 
 // ignore: camel_case_types
 class RetraiteScreen extends StatefulWidget {
-  final bool includeMarkAsDoneButton;
-
   const RetraiteScreen({
     Key? key,
-    required this.includeMarkAsDoneButton,
   }) : super(key: key);
 
   @override
@@ -39,258 +39,220 @@ class RetraiteScreenState extends State<RetraiteScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text('Simulateur Pension retraite'),
-          actions: <Widget>[
-            if (widget.includeMarkAsDoneButton)
-              IconButton(
-                icon: const Icon(Icons.done),
-                onPressed: () => Navigator.pop(context, true),
-                tooltip: 'Mark as done',
-              )
-          ],
-        ),
-        body: SingleChildScrollView(
-          child: Container(
-            padding: EdgeInsets.all(10),
-            child: Column(
-              children: [
-                Text(
-                  'Simulateur Pension Normal',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18.0,
-                  ),
-                ),
-                SizedBox(height: 10),
-                Text(
-                    'Quelle est votre date de Naissance? (veuillez respecter les format jour/mois/année)'),
-                SizedBox(height: 5),
-                TextField(
-                  controller: ddnCtrl,
-                  decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(10),
-                        ),
-                      ),
-                      hintText: 'jj/mm/aaaa'),
-                ),
-                SizedBox(height: 10),
-                Text(
-                  'A quel régime cotisez-vous ?',
-                ),
-                SizedBox(height: 5),
-                Container(
-                  padding: EdgeInsets.all(5),
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: Colors.white70,
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                    boxShadow: <BoxShadow>[
-                      BoxShadow(
-                        offset: Offset(1, 1),
-                        //blurRadius: 1,
-                        color: Colors.grey.withOpacity(.6),
-                      )
-                    ],
-                  ),
-                  child: DropdownButton<String>(
-                    value: _chosenValue,
-                    //elevation: 5,
-                    style: TextStyle(color: Colors.black),
-                    items: <String>[
-                      'RG',
-                      'FCT',
-                      'FNP',
-                      'DMG',
-                    ].map<DropdownMenuItem<String>>((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
-                      );
-                    }).toList(),
-                    hint: Text(
-                      "Régime",
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600),
+      body: Container(
+        color: Colors.white,
+        child: Align(
+          alignment: Alignment.center,
+          child: FutureBuilder<Task>(
+            future: getSampleTask(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done &&
+                  snapshot.hasData &&
+                  snapshot.data != null) {
+                final task = snapshot.data!;
+                return SurveyKit(
+                  onResult: (SurveyResult result) {
+                    print(result.finishReason);
+                  },
+                  task: task,
+                  showProgress: true,
+                  localizations: {
+                    'cancel': 'Annuler',
+                    'next': 'Suivant',
+                  },
+                  themeData: Theme.of(context).copyWith(
+                    colorScheme: ColorScheme.fromSwatch(
+                      primarySwatch: Colors.blue,
+                    ).copyWith(
+                      onPrimary: Colors.white,
                     ),
-                    onChanged: (value) {
-                      setState(() {
-                        _chosenValue = value!;
-                      });
-
-                      switch (value) {
-                        case "RG":
-                          setState(() {
-                            afficher_label_indice_solde = false;
-                            afficher_et_indice_solde = false;
-                          });
-                          break;
-
-                        case "FCT":
-                          setState(() {
-                            afficher_label_indice_solde = true;
-                            afficher_et_indice_solde = true;
-                          });
-                      }
-                    },
-                  ),
-                ),
-                SizedBox(height: 10),
-                Text(
-                    "Pendant combien d'années avez-vous travaillé entre 1976 et 2001"),
-                SizedBox(height: 5),
-                TextField(
-                  controller: nbreAnneeCtrl,
-                  decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(10),
+                    primaryColor: Color(0xff333c8b),
+                    backgroundColor: Colors.white,
+                    appBarTheme: const AppBarTheme(
+                      color: Colors.white,
+                      iconTheme: IconThemeData(
+                        color: Color(0xff333c8b),
+                      ),
+                      titleTextStyle: TextStyle(
+                        color: Color(0xff333c8b),
+                      ),
+                    ),
+                    iconTheme: const IconThemeData(
+                      color: Color(0xff333c8b),
+                    ),
+                    textSelectionTheme: TextSelectionThemeData(
+                      cursorColor: Color(0xff333c8b),
+                      selectionColor: Color(0xff333c8b),
+                      selectionHandleColor: Color(0xff333c8b),
+                    ),
+                    cupertinoOverrideTheme: CupertinoThemeData(
+                      primaryColor: Color(0xff333c8b),
+                    ),
+                    outlinedButtonTheme: OutlinedButtonThemeData(
+                      style: ButtonStyle(
+                        minimumSize: MaterialStateProperty.all(
+                          Size(150.0, 60.0),
+                        ),
+                        side: MaterialStateProperty.resolveWith(
+                          (Set<MaterialState> state) {
+                            if (state.contains(MaterialState.disabled)) {
+                              return BorderSide(
+                                color: Colors.grey,
+                              );
+                            }
+                            return BorderSide(
+                              color: Color(0xff333c8b),
+                            );
+                          },
+                        ),
+                        shape: MaterialStateProperty.all(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                        ),
+                        textStyle: MaterialStateProperty.resolveWith(
+                          (Set<MaterialState> state) {
+                            if (state.contains(MaterialState.disabled)) {
+                              return Theme.of(context)
+                                  .textTheme
+                                  .button
+                                  ?.copyWith(
+                                    color: Colors.grey,
+                                  );
+                            }
+                            return Theme.of(context).textTheme.button?.copyWith(
+                                  color: Color(0xff333c8b),
+                                );
+                          },
                         ),
                       ),
-                      hintText: ''),
-                ),
-                SizedBox(height: 10),
-                Text(
-                    "Pendant combien d'années avez-vous travaillé entre 2002 et 2007"),
-                SizedBox(height: 5),
-                TextField(
-                  controller: nbreAnneeCtrl2,
-                  decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(10),
-                        ),
-                      ),
-                      hintText: ''),
-                ),
-                SizedBox(height: 10),
-                Text(
-                    "Pendant combien d'années avez-vous travaillé de 2008 à aujourd'hui"),
-                SizedBox(height: 05),
-                TextField(
-                  controller: nbreAnneeCtrl3,
-                  decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(10),
-                        ),
-                      ),
-                      hintText: ''),
-                ),
-                SizedBox(height: 10),
-                Text(
-                    "Indiquez la moyenne de votre salaire brut mensuel des 10 dernères années"),
-                SizedBox(height: 5),
-                TextField(
-                  controller: salaireCtrl,
-                  decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(10),
-                        ),
-                      ),
-                      hintText: ''),
-                ),
-                afficher_label_indice_solde
-                    ? Text('Indice du solde')
-                    : Text(""),
-                afficher_et_indice_solde
-                    ? TextField(
-                        controller: indiceCtrl,
-                        decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(10),
+                    ),
+                    textButtonTheme: TextButtonThemeData(
+                      style: ButtonStyle(
+                        textStyle: MaterialStateProperty.all(
+                          Theme.of(context).textTheme.button?.copyWith(
+                                color: Color(0xff333c8b),
                               ),
-                            ),
-                            hintText: ''),
-                      )
-                    : Text(""),
-                SizedBox(
-                  height: 5,
-                ),
-                ElevatedButton(
-                    onPressed: () {
-                      int nbreAnnee1 = nbreAnneeCtrl.text.isEmpty
-                          ? 0
-                          : int.parse(nbreAnneeCtrl.text);
-                      int nbreAnnee2 = nbreAnneeCtrl2.text.isEmpty
-                          ? 0
-                          : int.parse(nbreAnneeCtrl2.text);
-                      int nbreAnnee3 = nbreAnneeCtrl3.text.isEmpty
-                          ? 0
-                          : int.parse(nbreAnneeCtrl3.text);
-
-                      double salaireBrut = salaireCtrl.text.isEmpty
-                          ? 0.0
-                          : double.parse(salaireCtrl.text);
-
-                      int dureeCotisation =
-                          nbreAnnee1 + nbreAnnee2 + nbreAnnee3;
-
-                      var dateNaissanceSplit = ddnCtrl.text.split('/');
-                      if (dateNaissanceSplit.length < 3)
-                        MAlertDialog.show(
-                            "Format de la date incorrect", context);
-                      else {
-                        int annee = int.parse(dateNaissanceSplit[2]);
-                        var currentAnnee = new DateTime.now().year;
-                        int age = currentAnnee - annee;
-
-                        if (_chosenValue == "RG") {
-                          MAlertDialog.show(
-                              regimeRG(age, dureeCotisation, nbreAnnee1,
-                                      nbreAnnee2, nbreAnnee3, salaireBrut)
-                                  .toString(),
-                              context);
-                        }
-                      }
-                    },
-                    child: Container(
-                      padding: EdgeInsets.all(15),
-                      width: double.infinity,
-                      child: Center(
-                        child: Text("SIMULER"),
+                        ),
                       ),
-                    )),
-              ],
-            ),
+                    ),
+                    textTheme: TextTheme(
+                      headline2: TextStyle(
+                        fontSize: 28.0,
+                        color: Colors.black,
+                      ),
+                      headline5: TextStyle(
+                        fontSize: 24.0,
+                        color: Colors.black,
+                      ),
+                      bodyText2: TextStyle(
+                        fontSize: 18.0,
+                        color: Colors.black,
+                      ),
+                      subtitle1: TextStyle(
+                        fontSize: 18.0,
+                        color: Colors.black,
+                      ),
+                    ),
+                    inputDecorationTheme: InputDecorationTheme(
+                      labelStyle: TextStyle(
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                  surveyProgressbarConfiguration: SurveyProgressConfiguration(
+                    backgroundColor: Colors.white,
+                  ),
+                );
+              }
+              return CircularProgressIndicator.adaptive();
+            },
           ),
-        ));
+        ),
+      ),
+    );
   }
 
-  double regimeFCT(int age, int dureeCotisation) {
-    var pensionNet = 0.0;
-    if (age < 60) {
-      MAlertDialog.show("Vous devez avoir au moins 60ans", context);
-    } else if (dureeCotisation < 25) {
-      MAlertDialog.show("Vous devez cotiser pour au moins 25ans", context);
-    }
-    return pensionNet;
-  }
-
-  double regimeRG(int age, int dureeCotisation, int nbreAnnee1, int nbreAnnee2,
-      int nbreAnnee3, double salaireBrut) {
-    var pensionNet = 0.0;
-    if (age < 60) {
-      MAlertDialog.show("Vous devez avoir au moins 60ans", context);
-    } else if (dureeCotisation < 25) {
-      MAlertDialog.show("Vous devez cotiser pour au moins 25ans", context);
-    } else {
-      double tc1 = 0.02 * nbreAnnee1;
-      double tc2 = 0.018 * nbreAnnee2;
-      double tc3 = 0.015 * nbreAnnee3;
-      double tcc = tc1 + tc2 + tc3;
-
-      double pensionBrute = salaireBrut * tcc;
-      pensionNet = (pensionBrute > 50000)
-          ? pensionBrute - (pensionBrute * 0.03)
-          : pensionBrute;
-    }
-    return pensionNet;
+  Future<Task> getSampleTask() {
+    var task = NavigableTask(
+      id: TaskIdentifier(),
+      steps: [
+        InstructionStep(
+          title: 'Simulateur de \nPension de retraite',
+          text:
+              'Pour connaître une estimation de votre pension de retraite, veuillez saisir correctement vos informations',
+          buttonText: "Commencer",
+        ),
+        QuestionStep(
+          title: 'Quelle est votre date de Naissance ?',
+          answerFormat: DateAnswerFormat(
+            minDate: DateTime.utc(1970),
+            maxDate: DateTime.now(),
+          ),
+          isOptional: false,
+        ),
+        QuestionStep(
+          title: 'A quel régime cotisez-vous ?',
+          text: '',
+          answerFormat: SingleChoiceAnswerFormat(
+            textChoices: [
+              TextChoice(text: 'RG', value: 'RG'),
+              TextChoice(text: 'FCT', value: 'FCT'),
+              TextChoice(text: 'FNP', value: 'FNP'),
+              TextChoice(text: 'DMG', value: 'DMG'),
+            ],
+          ),
+          isOptional: false,
+        ),
+        QuestionStep(
+            title:
+                'Pendant combien d\'années avez-vous travaillé entre 1976 et 2001 ?',
+            answerFormat: IntegerAnswerFormat(),
+            isOptional: false),
+        QuestionStep(
+            title:
+                'Pendant combien d\'années avez-vous travaillé entre 2002 et 2007 ?',
+            answerFormat: IntegerAnswerFormat(),
+            isOptional: false),
+        QuestionStep(
+          title:
+              'Pendant combien d\'années avez-vous travaillé de 2008 à aujourd\'hui ?',
+          isOptional: false,
+          answerFormat: IntegerAnswerFormat(),
+        ),
+        QuestionStep(
+          title:
+              'Indiquez la moyenne de votre salaire brut mensuel des 10 dernères années',
+          isOptional: false,
+          answerFormat: IntegerAnswerFormat(),
+        ),
+        QuestionStep(
+          title: 'Indice du solde',
+          answerFormat: IntegerAnswerFormat(),
+        ),
+        CompletionStep(
+          stepIdentifier: StepIdentifier(id: '321'),
+          text: 'Merci!',
+          title: 'Fait!',
+          buttonText: 'Simuler',
+        ),
+      ],
+    );
+/*     task.addNavigationRule(
+      forTriggerStepIdentifier: task.steps[6].stepIdentifier,
+      navigationRule: ConditionalNavigationRule(
+        resultToStepIdentifierMapper: (input) {
+          switch (input) {
+            case "Yes":
+              return task.steps[0].stepIdentifier;
+            case "No":
+              return task.steps[7].stepIdentifier;
+            default:
+              return null;
+          }
+        },
+      ),
+    ); */
+    return Future.value(task);
   }
 }

@@ -1,12 +1,13 @@
 import 'dart:ui';
+import 'package:flutter/services.dart';
 
 import 'package:cnss_djibouti_app/screens/AppelCotisationScreen.dart';
 import 'package:cnss_djibouti_app/screens/ListeAssuresScreen.dart';
 import 'package:cnss_djibouti_app/screens/RecouvrementScreen.dart';
 import 'package:cnss_djibouti_app/screens/SuiviPaiementScreen.dart';
 import 'package:cnss_djibouti_app/widget/appdrawer.dart';
-import 'package:cnss_djibouti_app/widget/assure.dart';
 import 'package:cnss_djibouti_app/widget/categoryCard.dart';
+import 'package:cnss_djibouti_app/widget/navigation_drawer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -98,13 +99,44 @@ class _MyHomePageState extends State<Dashboard> {
 
     return Scaffold(
       backgroundColor: const Color(0xFFFAFAFA),
+      extendBodyBehindAppBar: true,
+      drawer: NavigationDrawerWidget(),
+      appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          leadingWidth: 20,
+          systemOverlayStyle:
+              SystemUiOverlayStyle(statusBarIconBrightness: Brightness.light),
+          // leading none
+          automaticallyImplyLeading: false,
+          actions: [
+            Builder(
+              builder: (context) => Align(
+                alignment: Alignment.topRight,
+                child: Container(
+                  alignment: Alignment.center,
+                  height: 52,
+                  width: 52,
+                  child: IconButton(
+                    icon: Icon(
+                      Icons.menu,
+                      color: Colors.white,
+                    ),
+                    onPressed: () {
+                      Scaffold.of(context).openDrawer();
+                    },
+                  ),
+                ),
+              ),
+            )
+          ]),
       body: Stack(
         children: <Widget>[
           Container(
             // Here the height of the container is 45% of our total height
             height: size.height * .45,
             decoration: BoxDecoration(
-              color: Color(0xFF908AFB),
+              color: Color(0xFF0075a0),
               image: DecorationImage(
                 alignment: Alignment.bottomLeft,
                 image: AssetImage("assets/images/shape.png"),
@@ -117,21 +149,8 @@ class _MyHomePageState extends State<Dashboard> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-/*                   Align(
-                    alignment: Alignment.topRight,
-                    child: Container(
-                      alignment: Alignment.center,
-                      height: 52,
-                      width: 52,
-                      decoration: BoxDecoration(
-                        color: Color(0xFFF2BEA1),
-                        shape: BoxShape.circle,
-                      ),
-                      child: SvgPicture.asset("assets/icons/menu.svg"),
-                    ),
-                  ), */
                   SizedBox(
-                    height: 50,
+                    height: 10,
                   ),
                   _getWelcome(),
                   SizedBox(
