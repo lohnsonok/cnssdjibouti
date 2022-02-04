@@ -84,18 +84,6 @@ class RecouvrementPageState extends State<RecouvrementPage> {
                 Icons.arrow_back_ios,
                 color: Colors.grey.shade600,
               )),
-          actions: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: IconButton(
-                  iconSize: 30,
-                  onPressed: () {},
-                  icon: Icon(
-                    Icons.filter_list,
-                    color: Colors.grey.shade400,
-                  )),
-            )
-          ],
           title: Container(
             height: 45,
             child: Padding(

@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 
@@ -28,8 +29,11 @@ class SuiviPaiementPageState extends State<SuiviPaiementPage> {
   //String compteCotisant = "";
   String compteCotisant = "";
   bool isLoading = true;
+  bool isFiltered = false;
 
   ContainerTransitionType _transitionType = ContainerTransitionType.fade;
+
+  Logger _logger = Logger();
 
   void _showMarkedAsDoneSnackbar(bool? isMarkedAsDone) {
     if (isMarkedAsDone ?? false)
@@ -49,6 +53,9 @@ class SuiviPaiementPageState extends State<SuiviPaiementPage> {
       });
       futureListeRecouvrement = fetchListeRecouvrement(compteCotisant);
       recouvrementList = await futureListeRecouvrement;
+      recouvrementList = recouvrementList
+          .where((element) => element.statut == "Declaré")
+          .toList();
     }
   }
 
@@ -76,7 +83,6 @@ class SuiviPaiementPageState extends State<SuiviPaiementPage> {
   @override
   void initState() {
     _loadUser();
-    // futureListeRecouvrement = fetchListeRecouvrement();
     super.initState();
   }
 
@@ -103,7 +109,10 @@ class SuiviPaiementPageState extends State<SuiviPaiementPage> {
             padding: const EdgeInsets.all(8.0),
             child: IconButton(
                 iconSize: 30,
-                onPressed: () {},
+                onPressed: () {
+                  isFiltered = !isFiltered;
+                  _filterRecouvrementList();
+                },
                 icon: Icon(
                   Icons.filter_list,
                   color: Colors.grey.shade400,
@@ -354,6 +363,40 @@ class SuiviPaiementPageState extends State<SuiviPaiementPage> {
       return "Redressement";
     } else if (statut == "Clôturer") {
       return "Clôturé";
+    }
+  }
+
+  _filterRecouvrementList() {
+    if (isFiltered) {
+      setState(() {
+        recouvrementList.sort((a, b) {
+          var year = a.periode.substring(0, 4);
+          var month = a.periode.substring(5, 7);
+
+          var year2 = b.periode.substring(0, 4);
+          var month2 = b.periode.substring(5, 7);
+
+          var date1 = DateTime(int.parse(year), int.parse(month), 1);
+          var date2 = DateTime(int.parse(year2), int.parse(month2), 1);
+
+          return date1.compareTo(date2);
+        });
+      });
+    } else {
+      setState(() {
+        recouvrementList.sort((a, b) {
+          var year = a.periode.substring(0, 4);
+          var month = a.periode.substring(5, 7);
+
+          var year2 = b.periode.substring(0, 4);
+          var month2 = b.periode.substring(5, 7);
+
+          var date1 = DateTime(int.parse(year), int.parse(month), 1);
+          var date2 = DateTime(int.parse(year2), int.parse(month2), 1);
+
+          return date2.compareTo(date1);
+        });
+      });
     }
   }
 }
