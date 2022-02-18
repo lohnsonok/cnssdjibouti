@@ -10,6 +10,7 @@ import 'package:flutter/widgets.dart';
 import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 import '../configs/ApiConnexion.dart';
 import '../configs/theme.dart';
@@ -32,8 +33,6 @@ class SuiviPaiementPageState extends State<SuiviPaiementPage> {
   bool isFiltered = false;
 
   ContainerTransitionType _transitionType = ContainerTransitionType.fade;
-
-  Logger _logger = Logger();
 
   void _showMarkedAsDoneSnackbar(bool? isMarkedAsDone) {
     if (isMarkedAsDone ?? false)
@@ -153,7 +152,9 @@ class SuiviPaiementPageState extends State<SuiviPaiementPage> {
   }
 
   itemWidget({required SuiviPaiement recouvrement}) {
+    initializeDateFormatting();
     final f = new DateFormat('dd-MM-yyyy');
+    final m = new DateFormat('MMMM yyyy', 'fr_FR');
 
     return Container(
         padding: EdgeInsets.all(10),
@@ -210,13 +211,41 @@ class SuiviPaiementPageState extends State<SuiviPaiementPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Container(
-                        padding:
-                            EdgeInsets.symmetric(vertical: 8, horizontal: 15),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            color: getStatusColor(recouvrement.statut)),
+                        padding: EdgeInsets.symmetric(vertical: 8),
                         child: Text(
-                          getStatus(recouvrement.statut),
+                          "Statut: " + getStatus(recouvrement.statut),
+                          style: TextStyle(
+                              color: Colors.black, fontFamily: "Lato"),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        padding: EdgeInsets.symmetric(vertical: 1),
+                        child: Text(
+                          "Statut de révision: ",
+                          style: TextStyle(
+                              color: Colors.black, fontFamily: "Lato"),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          recouvrement.statut_de_revision ?? "",
                           style: TextStyle(
                               color: Colors.black, fontFamily: "Lato"),
                         ),
@@ -264,7 +293,7 @@ class SuiviPaiementPageState extends State<SuiviPaiementPage> {
                                 height: 5,
                               ),
                               Text(
-                                "Compte cotisant:",
+                                "Montant réglé:",
                                 style: TextStyle(
                                     color: Colors.grey[500],
                                     fontFamily: "Lato"),
@@ -273,7 +302,7 @@ class SuiviPaiementPageState extends State<SuiviPaiementPage> {
                                 height: 5,
                               ),
                               Text(
-                                recouvrement.compte_cotisant ?? "",
+                                recouvrement.montant_regle ?? "",
                                 style: TextStyle(
                                     color: Colors.black, fontFamily: "Lato"),
                               ),
@@ -336,6 +365,31 @@ class SuiviPaiementPageState extends State<SuiviPaiementPage> {
                                   style: TextStyle(
                                       color: Colors.black, fontFamily: "Lato"),
                                 ),
+                                SizedBox(
+                                  height: 5,
+                                ),
+                                Text(
+                                  "Période:",
+                                  style: TextStyle(
+                                      color: Colors.grey[500],
+                                      fontFamily: "Lato"),
+                                ),
+                                SizedBox(
+                                  height: 5,
+                                ),
+                                Text(
+                                  m.format(DateTime.parse(recouvrement.periode
+                                          .toString()
+                                          .substring(0, 4) +
+                                      "-" +
+                                      recouvrement.periode
+                                          .toString()
+                                          .substring(5, 7) +
+                                      "-"
+                                          "01")),
+                                  style: TextStyle(
+                                      color: Colors.black, fontFamily: "Lato"),
+                                ),
                               ])
                         ])
                   ],
@@ -344,16 +398,6 @@ class SuiviPaiementPageState extends State<SuiviPaiementPage> {
             ],
           ),
         ));
-  }
-
-  getStatusColor(statut) {
-    if (statut == "Declaré") {
-      return Color(int.parse("0xFF00CDAF")).withAlpha(20);
-    } else if (statut == "Redressement") {
-      return Color(int.parse("0xFFABB6C0")).withAlpha(20);
-    } else if (statut == "Clôturer") {
-      return Color(int.parse("0xFFFF0000")).withAlpha(20);
-    }
   }
 
   getStatus(statut) {

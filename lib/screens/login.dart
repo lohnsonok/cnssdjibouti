@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:ui';
 
 import 'package:animations/animations.dart';
@@ -25,15 +26,16 @@ const double _fabDimension = 56.0;
 
 class _loginState extends State<login> {
   bool isMale = true;
-  // bool isSignup = true;
   bool isRemebre = false;
   bool loading = false;
+  bool isAssuree = false;
+
   late SharedPreferences preferences;
 
   TextEditingController compteCotisantController = new TextEditingController()
     ..text = '0600000000001';
   TextEditingController passwordController = new TextEditingController()
-    ..text = 'cnss2020';
+    ..text = 'cnss2021';
 
   ContainerTransitionType _transitionType = ContainerTransitionType.fade;
 
@@ -263,15 +265,25 @@ class _loginState extends State<login> {
     preferences = await SharedPreferences.getInstance();
     Dio dio = Dio(ApiConnexion().baseOptions());
 
-    String name = compteCotisantController.text;
+    String numero = compteCotisantController.text;
     String password = passwordController.text;
     var response = await dio.post('/login_cotisant',
-        data: {'compte_cotisant': name, 'mot_passe': password});
+        data: {'compte_cotisant': numero, 'mot_passe': password});
     //widget.onChangedStep(1)
+    if (response.data["Compte_Cotisant"] == null) {
+      response = await dio
+          .post('/login_assure', data: {'urn': numero, 'mot_passe': password});
+      if (response.data["URN"] != null) {
+        setState(() {
+          isAssuree = true;
+        });
+      }
+    }
     setState(() {
       loading = false;
     });
-    if (response.data["compte_cotisant"] == null) {
+    if ((response.data["Compte_Cotisant"] == null && !isAssuree) ||
+        (response.data["URN"] == null && isAssuree)) {
       AlertDialog dialog = AlertDialog(
         title: const Text('Info Connexion'),
         content: const Text('Oops ! Aucun compte trouvé !'),
@@ -289,19 +301,16 @@ class _loginState extends State<login> {
         },
       );
     } else {
-      await preferences.setString(
-          "compte_cotisant", response.data["compte_cotisant"]);
-      await preferences.setString("nom", response.data["nom"]);
-      /*await preferences.setString("secteur_d_activite", response.data["secteur_d_activite"]);
-        await preferences.setString("sous_secteur_d_activite", response.data["sous_secteur_d_activite"]);
-        await preferences.setString("type_d_affiliation", response.data["type_d_affiliation"]);
-        await preferences.setString("statut", response.data["statut"]);
-        await preferences.setString("date_d_affiliation", response.data["date_d_affiliation"]);
-        await preferences.setString("type_de_cotisant", response.data["type_de_cotisant"]);
-        await preferences.setString("date_de_radiation", response.data["date_de_radiation"]);
-        await preferences.setString("date_de_suspension", response.data["date_de_suspension"]);
-        await preferences.setString("date_de_creation_de_l_entreprise", response.data["date_de_creation_de_l_entreprise"]);
-        await preferences.setString("telephone", response.data["telephone"]);*/
+      if (response.data["Compte_Cotisant"] != null)
+        await preferences.setString("compte_cotisant", numero);
+      if (response.data["Compte_Cotisant"] != null)
+        await preferences.setString("nom", response.data["Nom"]);
+      if (response.data["URN"] != null)
+        await preferences.setString(
+            "nom", response.data["FName"] + ' ' + response.data["OName"]);
+      if (response.data["URN"] != null)
+        await preferences.setString("compte_assuree", numero);
+      await preferences.setBool("isAssuree", isAssuree);
 
       Navigator.pushReplacement(
         context,

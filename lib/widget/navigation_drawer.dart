@@ -18,6 +18,13 @@ class NavigationDrawerWidget extends StatelessWidget {
               child: Column(
                 children: [
                   const SizedBox(height: 40),
+                  DrawerHeader(
+                    child: Image.asset(
+                      'assets/images/logo.jpg',
+                      fit: BoxFit.fitHeight,
+                    ),
+                  ),
+                  const SizedBox(height: 40),
                   buildMenuItem(
                     text: 'Accueil',
                     icon: Icons.home,

@@ -10,8 +10,10 @@ class SuiviPaiement {
     required this.numero_appel_de_cotisation,
     required this.nom,
     required this.statut,
+    required this.statut_de_revision,
     required this.date_d_echeance,
     required this.cotisation,
+    required this.montant_regle,
     required this.total,
     required this.solde,
   });
@@ -21,8 +23,10 @@ class SuiviPaiement {
   String? numero_appel_de_cotisation;
   String? nom;
   String? statut;
+  String? statut_de_revision;
   String? date_d_echeance;
   String? cotisation;
+  String? montant_regle;
   String? total;
   String? solde;
 
@@ -32,8 +36,10 @@ class SuiviPaiement {
         numero_appel_de_cotisation: json["numéro appel de cotisation"],
         nom: json["nom"],
         statut: json["statut"],
+        statut_de_revision: json["statut_de_révision"],
         date_d_echeance: json["date_d'échéance"],
         cotisation: json["cotisation"],
+        montant_regle: json["montant_réglé"],
         total: json["total"],
         solde: json["solde"],
       );

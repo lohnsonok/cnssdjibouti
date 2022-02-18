@@ -17,26 +17,22 @@ class AppDrawer extends StatelessWidget {
         // Important: Remove any padding from the ListView.
         padding: EdgeInsets.zero,
         children: [
-          DrawerHeader(
-            decoration: BoxDecoration(
-              boxShadow: <BoxShadow>[
-                BoxShadow(
-                  offset: Offset(1, 4),
-                  blurRadius: 4,
-                  color: Colors.white,
-                )
-              ],
-              color: Colors.white10,
-            ),
-            child: Image.asset(
-              'assets/images/logo.jpg',
-              fit: BoxFit.fitHeight,
-            ),
-          ),
+          ListTile(title: Text("s")),
           SizedBox(
             child: Divider(
               color: Colors.blue,
             ),
+          ),
+          ListTile(
+            title: const Text('Accueil'),
+            onTap: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => Dashboard(),
+                ),
+              );
+            },
           ),
           ListTile(
             title: const Text('Accueil'),

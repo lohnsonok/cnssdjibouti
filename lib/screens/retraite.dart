@@ -361,8 +361,12 @@ class RetraiteScreenState extends State<RetraiteScreen>
                     if (!isDisabled) {
                       if (regime == "DMG" && curIndex == 2) {
                         curIndex = 6;
+                      } else if (regime == "DMG" && curIndex == 6) {
+                        curIndex = 9;
                       } else if (regime == "RG" && curIndex == 5 ||
-                          regime == "DMG" && curIndex == 9) {
+                          regime == "DMG" && curIndex == 9 ||
+                          ((regime == "FCT" || regime == "FNP") &&
+                              curIndex == 9)) {
                         curIndex = 10;
                         isLoadingCalculated = true;
                         Timer timer = new Timer(new Duration(seconds: 1), () {
@@ -1245,9 +1249,7 @@ class RetraiteScreenState extends State<RetraiteScreen>
       }
     } else if (regime == "DMG") {
       if ((int.parse(year1976_2001Ctrl.text) +
-              int.parse(year2002_todayCtrl.text) +
-              int.parse(year2007_2009Ctrl.text) +
-              int.parse(year2010_todayCtrl.text)) <
+              int.parse(year2002_todayCtrl.text)) <
           25) {
         setState(() {
           isLoadingCalculated = false;
@@ -1256,9 +1258,7 @@ class RetraiteScreenState extends State<RetraiteScreen>
       } else {
         double tc1 = 0.04 * int.parse(year1976_2001Ctrl.text);
         double tc2 = 0.03 * int.parse(year2002_todayCtrl.text);
-        double tc3 = 0.03 * int.parse(year2007_2009Ctrl.text);
-        double tc4 = 0.03 * int.parse(year2010_todayCtrl.text);
-        double tcc = tc1 + tc2 + tc3 + tc4;
+        double tcc = tc1 + tc2;
 
         double pensionAnnuelBrute =
             (int.parse(indiceCtrl.text) * tcc * 139.667) / 100;

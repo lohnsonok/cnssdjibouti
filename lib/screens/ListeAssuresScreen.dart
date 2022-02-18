@@ -32,15 +32,7 @@ class ListeAssuresPageState extends State<ListeAssuresPage> {
 
   ContainerTransitionType _transitionType = ContainerTransitionType.fade;
 
-  TextEditingController minController = TextEditingController();
-  TextEditingController maxController = TextEditingController();
-  TextEditingController minDateController = TextEditingController();
-  TextEditingController maxDateController = TextEditingController();
-
   late SharedPreferences preferences;
-
-  List<bool> purchaseType = [false, false, false];
-  String propertyType = 'Apartment & Unit';
 
   _loadUser() async {
     preferences = await SharedPreferences.getInstance();
