@@ -32,10 +32,8 @@ class _loginState extends State<login> {
 
   late SharedPreferences preferences;
 
-  TextEditingController compteCotisantController = new TextEditingController()
-    ..text = '0600000000001';
-  TextEditingController passwordController = new TextEditingController()
-    ..text = 'cnss2021';
+  TextEditingController compteCotisantController = new TextEditingController();
+  TextEditingController passwordController = new TextEditingController();
 
   ContainerTransitionType _transitionType = ContainerTransitionType.fade;
 
@@ -105,7 +103,7 @@ class _loginState extends State<login> {
                         height: 10,
                       ),
                       Text(
-                        "Pour obtenir votre mot de passe, veuillez vous rapprochez du Service Recouvrements(CNSS)",
+                        "Pour obtenir votre mot de passe, veuillez vous rapprocher du Service Recouvrements(CNSS)",
                         style: TextStyle(
                           fontSize: 12,
                           color: Colors.blue,
@@ -236,7 +234,7 @@ class _loginState extends State<login> {
         delay: 50,
         child: Center(
           child: Text(
-            "Bienvenue à CNSS",
+            "Bienvenue à la CNSS",
             style: const TextStyle(
                 color: Color(0xff333c8b),
                 fontWeight: FontWeight.w900,

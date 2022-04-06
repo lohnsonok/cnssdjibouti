@@ -11,6 +11,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:workmanager/workmanager.dart';
 import 'package:logger/logger.dart';
 
+Logger logger = Logger();
 void main() {
   SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(statusBarColor: Colors.transparent));
@@ -49,7 +50,6 @@ void callbackDispatcher() {
     futureListeCommunique = fetchListeCommunique();
     List<dynamic> communiqueList = await futureListeCommunique;
     Communique lastCommunique = communiqueList.last;
-
     // initialise the plugin of flutterlocalnotifications.
     FlutterLocalNotificationsPlugin flip =
         new FlutterLocalNotificationsPlugin();
@@ -63,11 +63,14 @@ void callbackDispatcher() {
     var settings = new InitializationSettings(android: android, iOS: IOS);
     flip.initialize(settings);
     // check if is within last 15minutes
-    if (DateTime.parse(lastCommunique.created_at.toString().substring(0, 10))
-            .difference(DateTime.now())
-            .inMinutes <
-        15) {
-      // notify
+    DateTime now = DateTime.now();
+    Duration difference = now.difference(
+        DateTime.parse(lastCommunique.created_at.toString().substring(0, 10)));
+    logger.i(difference.toString());
+    logger.i(difference.inMinutes.toString());
+    logger.i(lastCommunique.title.toString());
+    logger.i(lastCommunique.created_at.toString().substring(0, 10).toString());
+    if (difference.inMinutes <= 30) {
       _showNotificationWithDefaultSound(flip, lastCommunique);
     }
     return Future.value(true);

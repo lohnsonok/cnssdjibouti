@@ -115,7 +115,8 @@ class AppelCotisationPageState extends State<AppelCotisationPage> {
           ),
         ),
       ),
-      body: Container(
+      body: Center(child: Text("Indisponible pour le moment")),
+      /* body: Container(
         child: isLoading
             ? Center(child: CircularProgressIndicator())
             : ListView.builder(
@@ -125,7 +126,7 @@ class AppelCotisationPageState extends State<AppelCotisationPage> {
                   return FadeAnimation((1.0 + index) / 4,
                       itemWidget(appelCotisation: appelsCotisationList[index]));
                 }),
-      ),
+      ), */
     );
   }
 

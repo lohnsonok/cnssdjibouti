@@ -1,10 +1,10 @@
 import 'dart:convert';
 
-List<Insurance> postFromJson(String str) =>
-    List<Insurance>.from(json.decode(str).map((x) => Insurance.fromMap(x)));
+List<TxnInsurance> postFromJson(String str) => List<TxnInsurance>.from(
+    json.decode(str).map((x) => TxnInsurance.fromMap(x)));
 
-class Insurance {
-  Insurance(
+class TxnInsurance {
+  TxnInsurance(
       {required this.familyID,
       required this.uRN,
       required this.insuranceCompanyCode,
@@ -33,12 +33,12 @@ class Insurance {
   String? dateActivation;
   String? dateExpiry;
 
-  factory Insurance.fromMap(Map<String, dynamic> json) => Insurance(
+  factory TxnInsurance.fromMap(Map<String, dynamic> json) => TxnInsurance(
       familyID: json['FamilyID'],
       uRN: json['URN'],
-      insuranceCompanyCode: json['InsuranceCompanyCode'],
+      insuranceCompanyCode: json['TxnInsuranceCompanyCode'],
       schemeCode: json['SchemeCode'],
-      insurancePolicyNo: json['InsurancePolicyNo'],
+      insurancePolicyNo: json['TxnInsurancePolicyNo'],
       split: json['Split'],
       amountAllotedMainCard: json['AmountAlloted_Main_Card'],
       amountAllotedAddOnCard: json['AmountAlloted_AddOnCard'],

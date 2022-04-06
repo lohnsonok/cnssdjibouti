@@ -16,22 +16,7 @@ class aproposcren extends StatelessWidget {
               maxRadius: 120,
               minRadius: 120,
             ),
-            SizedBox(height: 10),
-            Text(
-              'Les Responsables des Cette \Applications Mobile:!',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 18.0,
-              ),
-            ),
-            SizedBox(height: 15),
-            Text(
-              'chef Dpt(Bassem Kazi) \chef Service.DevDeBa(Omar said)',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            SizedBox(height: 270),
+            SizedBox(height: 300),
             Text(
                 'copyright caisse-national sécurite Sociale 2021/09/09\ Version 1'),
           ],

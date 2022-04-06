@@ -10,7 +10,7 @@ class NavigationDrawerWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Drawer(
       child: Material(
-        color: Color(0xff0086b7),
+        color: Color(0xffffffff),
         child: ListView(
           children: <Widget>[
             Container(
@@ -70,8 +70,8 @@ class NavigationDrawerWidget extends StatelessWidget {
     required IconData icon,
     VoidCallback? onClicked,
   }) {
-    final color = Colors.white;
-    final hoverColor = Colors.white70;
+    final color = Color(0xFF222B45);
+    final hoverColor = Color(0xFF222B45).withOpacity(0.5);
 
     return ListTile(
       leading: Icon(icon, color: color),

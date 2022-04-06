@@ -1217,10 +1217,15 @@ class RetraiteScreenState extends State<RetraiteScreen>
 
     num age = DateTime.now().year - year;
 
-    if (age < 60) {
+    if (age < 60 && regime != "FNP") {
       setState(() {
         isLoadingCalculated = false;
         extimatedTo = "Vous devez avoir au moins 60ans";
+      });
+    } else if (age < 55 && regime == "FNP") {
+      setState(() {
+        isLoadingCalculated = false;
+        extimatedTo = "Vous devez avoir au moins 55ans";
       });
     } else if (regime == "RG") {
       if ((int.parse(year1976_2001Ctrl.text) +
@@ -1243,8 +1248,8 @@ class RetraiteScreenState extends State<RetraiteScreen>
             : pensionBrute;
         setState(() {
           isLoadingCalculated = false;
-          extimatedTo =
-              "Votre pension Net est estimée à " + pensionNet.toString();
+          extimatedTo = "Votre pension Net mensuelle est estimée à " +
+              pensionNet.toString();
         });
       }
     } else if (regime == "DMG") {

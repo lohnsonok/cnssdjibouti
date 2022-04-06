@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:ui';
 import 'package:cnss_djibouti_app/animations/fade_animation.dart';
 import 'package:cnss_djibouti_app/configs/ApiConnexion.dart';
+import 'package:cnss_djibouti_app/models/Insurance.dart';
 import 'package:cnss_djibouti_app/models/TxnDependent.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -18,6 +19,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 
@@ -36,9 +38,11 @@ class _MyHomePageState extends State<Dashboard> {
   String assureurName = "";
   bool isAssuree = false;
   String compteCotisant = "";
+  late String accesSoins = "";
   late SharedPreferences preferences;
   TextEditingController searchController = new TextEditingController();
   late Future<List<TxnDependent>> futureListeAssures;
+  Logger logger = Logger();
 
   _loadUser() async {
     preferences = await SharedPreferences.getInstance();
@@ -58,6 +62,10 @@ class _MyHomePageState extends State<Dashboard> {
         compteCotisant = preferences.getString('compte_assuree')!;
       }
     });
+
+    if (isAssuree) {
+      soinAccessControlInsurance();
+    }
 
     futureListeAssures = fetchListeAssures(compteCotisant);
     assures = await futureListeAssures;
@@ -86,6 +94,132 @@ class _MyHomePageState extends State<Dashboard> {
   void initState() {
     super.initState();
     _loadUser();
+  }
+
+  void soinAccessControlInsurance() async {
+    final response = await http.get(Uri.parse(
+        ApiConnexion.baseUrl + '/txn_insurance_details/' + compteCotisant));
+
+    if (response.statusCode == 200) {
+      final insurances =
+          json.decode(response.body).cast<Map<String, dynamic>>();
+      if (insurances.length > 0 && insurances[0]["InsurancePolicyNo"] == "2") {
+        setState(() {
+          accesSoins = "Vous avez accès aux soins";
+        });
+      } else {
+        soinAccessControlHistory();
+      }
+    } else {
+      throw Exception('Failed to load data');
+    }
+  }
+
+  void soinAccessControlHistory() async {
+    final response = await http
+        .get(Uri.parse(ApiConnexion.baseUrl + '/CompteInd/' + compteCotisant));
+
+    if (response.statusCode == 200) {
+      final list = json.decode(response.body).cast<Map<String, dynamic>>();
+
+      const regimes = [
+        "EtatPub",
+        "FCT",
+        "FNP",
+        "DOC",
+        "Protocle",
+        "Retraite",
+        "AT",
+        "ETU",
+      ];
+
+      if (list[0]["Regime"] != "null") {
+        if (regimes.contains(list[0]["regime"])) {
+          setState(() {
+            accesSoins = "Vous avez accès aux soins";
+          });
+          return;
+        }
+      }
+
+      final res = await http.get(Uri.parse(
+          ApiConnexion.baseUrl + '/historique_declarations/' + compteCotisant));
+
+      if (response.statusCode == 200) {
+        final histories = json.decode(res.body).cast<Map<String, dynamic>>();
+        List<dynamic> currentYearHistories = histories.sublist(0, 4);
+        // check if histories monthly payment is paid within the last three months
+        if (currentYearHistories.length == 4) {
+          var Date1 = DateTime.parse(
+              currentYearHistories[0]["Periode"].substring(0, 4) +
+                  "-" +
+                  currentYearHistories[0]["Periode"].substring(5, 7) +
+                  "-" +
+                  "01");
+          var Date2 = DateTime.parse(
+              currentYearHistories[1]["Periode"].substring(0, 4) +
+                  "-" +
+                  currentYearHistories[1]["Periode"].substring(5, 7) +
+                  "-" +
+                  "01");
+          var Date3 = DateTime.parse(
+              currentYearHistories[2]["Periode"].substring(0, 4) +
+                  "-" +
+                  currentYearHistories[2]["Periode"].substring(5, 7) +
+                  "-" +
+                  "01");
+          var Date4 = DateTime.parse(
+              currentYearHistories[3]["Periode"].substring(0, 4) +
+                  "-" +
+                  currentYearHistories[3]["Periode"].substring(5, 7) +
+                  "-" +
+                  "01");
+
+          var now = DateTime.now();
+
+          // check if sequential months
+          if (Date1.month == Date2.month + 1 &&
+              Date2.month == Date3.month + 1 &&
+              Date3.month == Date4.month + 1) {
+            // check if last month is paid
+            if (Date1.month == now.month) {
+              if ((currentYearHistories[0]["Statut de paiement"] != "0" &&
+                      currentYearHistories[0]["Salaire brut declare"] != "0") &&
+                  (currentYearHistories[1]["Statut de paiement"] != "0" &&
+                      currentYearHistories[1]["Salaire brut declare"] != "0") &&
+                  (currentYearHistories[2]["Statut de paiement"] != "0" &&
+                      currentYearHistories[2]["Salaire brut declare"] != "0") &&
+                  (currentYearHistories[3]["Statut de paiement"] != "0" &&
+                      currentYearHistories[3]["Salaire brut declare"] != "0")) {
+                setState(() {
+                  accesSoins = "Vous avez accès aux soins";
+                });
+              } else {
+                setState(() {
+                  accesSoins = "Vous n'avez pas accès aux soins";
+                });
+              }
+            } else {
+              setState(() {
+                accesSoins = "Vous n'avez pas accès aux soins";
+              });
+            }
+          } else {
+            setState(() {
+              accesSoins = "Vous n'avez pas accès aux soins";
+            });
+          }
+        } else {
+          setState(() {
+            accesSoins = "Vous n'avez pas accès aux soins";
+          });
+        }
+      } else {
+        throw Exception('Failed to load data');
+      }
+    } else {
+      throw Exception('Failed to load data');
+    }
   }
 
   Widget cardContent(String imageName, String text, {required Widget page}) {
@@ -198,6 +332,13 @@ class _MyHomePageState extends State<Dashboard> {
                   child: _getWelcome(),
                 ),
                 SizedBox(
+                  height: 10,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: _getAccount(),
+                ),
+                SizedBox(
                   height: 50,
                 ),
                 Padding(
@@ -217,19 +358,32 @@ class _MyHomePageState extends State<Dashboard> {
   }
 
   _getWelcome() {
-    return Text(assureurName,
-        style: TextStyle(
-            fontFamily: "Lato",
-            fontSize: 30,
-            color: Colors.white,
-            fontWeight: FontWeight.w700));
+    return Text(
+      assureurName,
+      style: TextStyle(
+          fontFamily: "Lato",
+          fontSize: 30,
+          color: Colors.white,
+          fontWeight: FontWeight.w700),
+    );
+  }
+
+  _getAccount() {
+    return Text(
+      "Compte: " + compteCotisant,
+      style: TextStyle(
+          fontFamily: "Lato",
+          fontSize: 20,
+          color: Colors.white,
+          fontWeight: FontWeight.w700),
+    );
   }
 
   _getMedicalAccessStatus() {
     if (isAssuree) {
       return Container(
         child: Text(
-          "Vous avez accès au soins",
+          accesSoins,
           style: TextStyle(
               fontFamily: "Lato",
               fontSize: 20,
@@ -262,18 +416,6 @@ class _MyHomePageState extends State<Dashboard> {
             },
           ),
           CategoryCard(
-            title: "Appel de cotisation",
-            src: "assets/icons/savings.png",
-            press: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) {
-                  return AppelCotisationPage();
-                }),
-              );
-            },
-          ),
-          CategoryCard(
             title: "Suivi Paiements",
             src: "assets/icons/receipt.png",
             press: () {
@@ -281,6 +423,18 @@ class _MyHomePageState extends State<Dashboard> {
                 context,
                 MaterialPageRoute(builder: (context) {
                   return SuiviPaiementPage();
+                }),
+              );
+            },
+          ),
+          CategoryCard(
+            title: "Appel de cotisation",
+            src: "assets/icons/savings.png",
+            press: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) {
+                  return AppelCotisationPage();
                 }),
               );
             },

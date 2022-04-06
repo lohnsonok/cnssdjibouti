@@ -7,7 +7,6 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -52,9 +51,9 @@ class SuiviPaiementPageState extends State<SuiviPaiementPage> {
       });
       futureListeRecouvrement = fetchListeRecouvrement(compteCotisant);
       recouvrementList = await futureListeRecouvrement;
-      recouvrementList = recouvrementList
+      /* recouvrementList = recouvrementList
           .where((element) => element.statut == "Declaré")
-          .toList();
+          .toList(); */
     }
   }
 
@@ -184,7 +183,7 @@ class SuiviPaiementPageState extends State<SuiviPaiementPage> {
                           child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(recouvrement.nom ?? "",
+                                Text(recouvrement.nomDuCotisant ?? "",
                                     style: TextStyle(
                                         color: Colors.black,
                                         fontSize: 15,
@@ -245,7 +244,8 @@ class SuiviPaiementPageState extends State<SuiviPaiementPage> {
                     children: [
                       Flexible(
                         child: Text(
-                          recouvrement.statut_de_revision ?? "",
+                          getStatusRevision(recouvrement.statutDeRevision) ??
+                              "",
                           style: TextStyle(
                               color: Colors.black, fontFamily: "Lato"),
                         ),
@@ -302,7 +302,7 @@ class SuiviPaiementPageState extends State<SuiviPaiementPage> {
                                 height: 5,
                               ),
                               Text(
-                                recouvrement.montant_regle ?? "",
+                                recouvrement.montantRegler ?? "",
                                 style: TextStyle(
                                     color: Colors.black, fontFamily: "Lato"),
                               ),
@@ -319,7 +319,7 @@ class SuiviPaiementPageState extends State<SuiviPaiementPage> {
                                 height: 5,
                               ),
                               Text(
-                                recouvrement.numero_appel_de_cotisation ?? "",
+                                recouvrement.numeroAppelDeCotisation ?? "",
                                 style: TextStyle(
                                     color: Colors.black, fontFamily: "Lato"),
                               ),
@@ -401,11 +401,34 @@ class SuiviPaiementPageState extends State<SuiviPaiementPage> {
   }
 
   getStatus(statut) {
-    if (statut == "Declaré") {
+    if (statut == "0") {
+      return "Crée";
+    } else if (statut == "1") {
       return "Déclaré";
-    } else if (statut == "Redressement") {
+    } else if (statut == "2") {
+      return "En retard";
+    } else if (statut == "3") {
       return "Redressement";
-    } else if (statut == "Clôturer") {
+    } else if (statut == "4") {
+      return "";
+    } else if (statut == "5") {
+      return "Clôturé";
+    }
+  }
+
+  getStatusRevision(statut) {
+    if (statut == "0") {
+      return "Aucun";
+    } else if (statut == "1") {
+      return "En attente de révision";
+    } else if (statut == "2") {
+      return "En attente de fichier central";
+    } else if (statut == "3") {
+    } else if (statut == "3") {
+      return "En attente du chef de section";
+    } else if (statut == "4") {
+      return "En attente de recouvrement";
+    } else if (statut == "5") {
       return "Clôturé";
     }
   }

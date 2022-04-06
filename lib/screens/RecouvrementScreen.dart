@@ -69,57 +69,64 @@ class RecouvrementPageState extends State<RecouvrementPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          leadingWidth: 20,
-          systemOverlayStyle:
-              SystemUiOverlayStyle(statusBarIconBrightness: Brightness.dark),
-          leading: IconButton(
-              padding: EdgeInsets.only(left: 20),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              icon: Icon(
-                Icons.arrow_back_ios,
-                color: Colors.grey.shade600,
-              )),
-          title: Container(
-            height: 45,
-            child: Padding(
-              padding: const EdgeInsets.only(left: 10.0),
-              child: TextField(
-                cursorColor: Colors.grey,
-                decoration: InputDecoration(
-                  contentPadding:
-                      EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-                  filled: true,
-                  fillColor: Colors.grey.shade200,
-                  prefixIcon: Icon(Icons.search, color: Colors.grey),
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(50),
-                      borderSide: BorderSide.none),
-                  hintText: "Rechercher",
-                  hintStyle: TextStyle(fontSize: 14, fontFamily: "Lato"),
-                ),
-                onChanged: (val) {
-                  _search(val);
-                },
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leadingWidth: 20,
+        systemOverlayStyle:
+            SystemUiOverlayStyle(statusBarIconBrightness: Brightness.dark),
+        leading: IconButton(
+            padding: EdgeInsets.only(left: 20),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: Icon(
+              Icons.arrow_back_ios,
+              color: Colors.grey.shade600,
+            )),
+        title: Container(
+          height: 45,
+          child: Padding(
+            padding: const EdgeInsets.only(left: 10.0),
+            child: TextField(
+              cursorColor: Colors.grey,
+              decoration: InputDecoration(
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                filled: true,
+                fillColor: Colors.grey.shade200,
+                prefixIcon: Icon(Icons.search, color: Colors.grey),
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(50),
+                    borderSide: BorderSide.none),
+                hintText: "Rechercher",
+                hintStyle: TextStyle(fontSize: 14, fontFamily: "Lato"),
               ),
+              onChanged: (val) {
+                _search(val);
+              },
             ),
           ),
         ),
-        body: Container(
-          child: isLoading
-              ? Center(child: CircularProgressIndicator())
-              : ListView.builder(
-                  padding: EdgeInsets.all(20),
-                  itemCount: recouvrementList.length,
-                  itemBuilder: (context, index) {
-                    return FadeAnimation((1.0 + index) / 4,
-                        itemWidget(recouvrement: recouvrementList[index]));
-                  }),
-        ));
+      ),
+      body: Center(child: Text("Indisponible pour le moment")),
+      /* body: Container(
+        child: isLoading
+            ? Center(child: CircularProgressIndicator())
+            : ListView.builder(
+                padding: EdgeInsets.all(20),
+                itemCount: recouvrementList.length,
+                itemBuilder: (context, index) {
+                  return FadeAnimation(
+                    (1.0 + index) / 4,
+                    itemWidget(
+                      recouvrement: recouvrementList[index],
+                    ),
+                  );
+                },
+              ),
+      ), */
+    );
   }
 
   itemWidget({required Recouvrement recouvrement}) {
